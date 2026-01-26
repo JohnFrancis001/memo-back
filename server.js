@@ -15,6 +15,12 @@ app.use(
     credentials: true
   })
 );
+
+app.options("*", cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+}));
+
 // Middleware to parse incoming JSON requests and populate req.body
 app.use(express.json());
 // Middleware to parse cookies and populate req.cookies

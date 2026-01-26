@@ -11,10 +11,8 @@ const cookie_parser = require("cookie-parser");
 // To allow the triggers from only one frontend to hit different APIs
 app.use(
   cors({
-    origin: [
-    process.env.CLIENT_URL 
-    ],
-    credentials: true,
+    origin: process.env.CLIENT_URL,
+    credentials: true
   })
 );
 // Middleware to parse incoming JSON requests and populate req.body

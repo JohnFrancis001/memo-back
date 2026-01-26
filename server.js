@@ -11,7 +11,10 @@ const cookie_parser = require("cookie-parser");
 // To allow the triggers from only one frontend to hit different APIs
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+    process.env.CLIENT_URL,
+    "https://localhost:5173" 
+    ],
     credentials: true,
   })
 );
@@ -28,7 +31,9 @@ app.use("/log", logApi);
 app.use("/note", noteApi);
 app.use("/user", userApi);
 
+const PORT = process.env.PORT || 5000;
+
 // server Start
-app.listen(process.env.PORT || 5000, () => {
-  console.log("Running at Port:", process.env.PORT);
+app.listen(PORT, () => {
+  console.log("Running at Port:", PORT);
 });

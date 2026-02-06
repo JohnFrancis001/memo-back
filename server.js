@@ -7,22 +7,21 @@ const userApi = require("./routes/user");
 require("dotenv").config();
 const db = require("./db");
 const cookie_parser = require("cookie-parser");
+const compression = require("compression");
 
+app.use(compression());
 // To allow the triggers from only one frontend to hit different APIs
 app.use(
   cors({
-    origin: [
-    process.env.CLIENT_URL,
-    "https://localhost:5173" 
-    ],
-    credentials: true,
+    origin: process.env.CLIENT_URL,
+    credentials: true
   })
 );
 // Middleware to parse incoming JSON requests and populate req.body
 app.use(express.json());
 // Middleware to parse cookies and populate req.cookies
 app.use(cookie_parser());
-
+app.use("/uploads", express.static("uploads"));
 // DB connection
 db();
 

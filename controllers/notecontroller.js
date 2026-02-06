@@ -2,18 +2,18 @@ const Note = require('../models/note');
 
 // Controller to add note
 const addNote = async (req, res) => {
-    try{
+    try{ 
         const authName = req.user.name;
-        console.log(authName);
-        const { title, description, file } = req.body;
+        const { title, description } = req.body;
+        const file = req.file ? req.file.path : null;
         if( !authName || !title || !description) return res.status(400).json({message: "Field Required"});
         const note = new Note({
             author: authName,
             title,
             description,
-            file: file || null
+            file: file
         });
-        if(!note) return res.status(400).json({message: "Error Message"});
+        // if(!note) return res.status(400).json({message: "Error Message"});
         await note.save();
         res.status(200).json({message: "Note Created"});
     }catch(e){

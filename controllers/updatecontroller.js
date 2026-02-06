@@ -2,21 +2,46 @@ const Note = require('../models/note')
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 require('dotenv').config();
 
 // Controller to update the note
 const updNote = async (req, res) => {
     try{
         const id = req.params.id;
-        console.log(id);
         const name = req.user.name;
         const { title, description } = req.body;
-        // // Provide name and id both in frontend while making a request for updating it.
-        const note = await Note.findByIdAndUpdate( {_id: id, author: name }   , {
+        const file = req.file;
+        // Provide name and id both in frontend while making a request for updating it.
+        const oldNote = await Note.findOne( {_id: id, author: name });
+
+        if(!oldNote) return res.status(400).json({message: "Note not saved!"});
+
+        let updatedData = {
             title,
             description,
-        }, { new: true });
-        if(!note) return res.status(400).json({message: "Note not saved!"});
+            file
+        };
+
+        if (file){
+            if(oldNote.file) {
+                fs.unlink(oldNote.file, (err) => {
+                    if(err) Console.log("Old file delete error:", err);
+                });
+            }
+            updatedData.file = file.path;            
+        }
+
+        if (!title && !description && !file) {
+         return res.status(400).json({ message: "Nothing to update" });
+        }
+
+        const updatedNote = await Note.findByIdAndUpdate(
+            {_id: id, author: name},
+            updatedData,
+            { new: true }
+        )
+
         res.status(200).json({message: "Success Update"});
     }catch(e){
         res.status(400).json({message: "Server Error while updating"});
@@ -72,7 +97,7 @@ const userUpd = async (req, res) => {
             maxAge: 3600000,
         });
 
-        res.status(200).json({ message: "User Updated Successfully" , token});
+        res.status(200).json({ message: "User Updated Successfully"});
     } catch (e) {
         console.error(e);
         res.status(500).json({ message: "Internal Server Error" });

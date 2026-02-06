@@ -10,7 +10,6 @@ const jwtAuth = require('../middleware/jwtauth')
 // New User Registration route
 rout.post('/new', async (req, res) => {
     try{
-        
         const { name, email, password } = req.body;
         const exists = await User.findOne({ name });
         if (exists) return res.status(400).json({ message: "Email already registered" });

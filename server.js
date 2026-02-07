@@ -11,7 +11,7 @@ const cookie_parser = require("cookie-parser");
 // To allow the triggers from only one frontend to hit different APIs
 app.use(
   cors({
-    origin: ["https://memo-front-ruby.vercel.app/", "http:localhost:5173/"],
+    origin: process.env.CLIENT_URL,
     credentials: true
   })
 );
